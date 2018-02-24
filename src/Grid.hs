@@ -16,8 +16,8 @@ import Control.Comonad.Store
 -- Project
 import Pos
 
-data Grid = Grid { corner :: V2 Int
-                 , datum  :: Vector Word64
+data Grid = Grid { corner :: !(V2 Int)
+                 , datum  :: !(Vector Word64)
                  } deriving (Show)
 
 -- | Slices a list into n-sized chunks

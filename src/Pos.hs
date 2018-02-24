@@ -6,6 +6,7 @@ where
 
 -- Core
 import Data.Semigroup ((<>), Semigroup)
+
 type Pos = V2 Int
 
 data V2 a = V2 !a !a deriving (Eq, Ord, Show)
