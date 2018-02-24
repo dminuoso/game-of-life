@@ -2,15 +2,14 @@
 module Console where
 
 -- Base
-import Data.Foldable
-import Data.List
 import Control.Concurrent (threadDelay)
 import Control.Monad (join)
-import Data.Time (getCurrentTime, diffUTCTime)
+import Data.Foldable
+import Data.List
+import System.IO (hFlush)
 
 -- Extra
 import Control.Comonad.Store
-import System.Console.ANSI (setCursorPosition, hideCursor)
 
 -- Project
 import Automaton
@@ -21,43 +20,32 @@ clearScreen :: IO ()
 clearScreen = putStr "\ESC[2J"
 
 resetCursor :: IO ()
-resetCursor = putStr "\033[0;0f"
+resetCursor = putStr "\ESC[0;0J"
 
---hideCursor :: IO ()
---hideCursor = putStr "\u001B[?25l"
+-- Are these VT100 escape sequences?
+hideCursor :: IO ()
+hideCursor = putStr "\ESCB[?25l"
+
+showCursor :: IO ()
+showCursor = putStr "\ESC[?25h"
 
 toC :: Bool -> Char
 toC True  = 'x'
-toC False = ' '
+toC False = '.'
 
 printStore :: Pos -> Store Pos Bool -> IO ()
-printStore lr s = putStr ((intercalate "\n\r" . transpose) chars) where
+printStore lr s = traverse_ putStrLn (transpose chars) where
     peekIn = flip peek
     chars  = (fmap . fmap) (toC . peekIn s) (points lr)
 
-runTest :: IO ()
-runTest = do
-    hideCursor
+run :: IO ()
+run = do
     clearScreen
-    step xs
+    hideCursor
+    step $ iterate (runAutomaton' (V2 5 5)) toad
   where
-    xs = iterate (runAutomaton' (V2 40 40)) gun
     step (x:xs) = do
-        setCursorPosition 0 0
-        threadDelay 50000
-        start <- getCurrentTime
-        printStore (V2 40 40) x
-        end <- getCurrentTime
-        print (diffUTCTime end start)
+        resetCursor
+        --threadDelay 50000
+        printStore (V2 5 5) x
         step xs
-
-run :: Pos -> Store Pos Bool -> IO ()
-run p s = traverse_ step g where
-    g = iterate (runAutomaton' p) s
-    step s = do
-        threadDelay 50000
-        setCursorPosition 0 0
-        start <- getCurrentTime
-        printStore p s
-        end <- getCurrentTime
-        print (diffUTCTime end start)

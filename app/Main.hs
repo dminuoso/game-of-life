@@ -1,6 +1,6 @@
 module Main where
 
-import Console (runTest)
+import Console (run)
 
 main :: IO ()
-main = runTest
+main = run

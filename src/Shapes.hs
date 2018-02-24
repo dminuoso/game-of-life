@@ -1,17 +1,32 @@
-{-# LANGUAGE GADTs, FlexibleContexts #-}
-module Shapes where
+{-# LANGUAGE FlexibleContexts #-}
+
+module Shapes
+    ( toad
+    , pentadecathlon
+    , gun
+    )
+where
+
+-- Core
+import Data.Maybe (fromMaybe)
 
 -- Extra
-import Control.Comonad.Store (Store, store, peek)
-import Control.Lens (ix, non, (^?), (^.), to)
+import Control.Comonad.Store (Store, store)
 
 -- Project
 import Pos
 
+nth :: Int -> [a] -> Maybe a
+nth _ []       = Nothing
+nth 1 (x : _)  = Just x
+nth n (_ : xs) = nth (n - 1) xs
+
 shape :: [String] -> Store Pos Bool
-shape text = store (peek text) (V2 0 0) where
-    peek :: [String] -> Pos -> Bool
-    peek text (V2 x y) = (text ^? ix x . ix y . to (=='x')) ^. non False
+shape text = store (testCell text) (V2 0 0)
+
+testCell :: [String] -> Pos -> Bool
+testCell text (V2 x y) = fromMaybe False status where
+    status = (=='x') <$> (nth x text >>= nth y)
 
 toad :: Store Pos Bool
 toad =  shape [ "......"
@@ -55,5 +70,3 @@ gun = shape
     , "..............xx......................."
     , "......................................."
     ]
-gPos :: Pos
-gPos = V2 10 33

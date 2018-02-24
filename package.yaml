@@ -1,10 +1,8 @@
 name:                game-of-life
 version:             0.1.0.0
-github:              "dminuoso/game-of-life"
-license:             BSD3
-author:              "Victor Nawothnig"
-maintainer:          "Victor.Nawothnig@gmail.com"
-copyright:           "(c) 2017 Victor Nawothnig"
+author:              "dminuoso"
+maintainer:          "dminuoso"
+copyright:           "(c) 2018 dminuoso"
 
 extra-source-files:
 - README.md
@@ -22,12 +20,7 @@ description:         Please see the README on Github at <https://github.com/dmin
 dependencies:
 - base >= 4.7 && < 5
 - comonad
-- linear
 - vector
-- bytestring
-- lens
-- time
-- ansi-terminal
 
 library:
   source-dirs: src
@@ -38,6 +31,7 @@ executables:
     source-dirs:         app
     ghc-options:
     - -threaded
+    - -O1
     - -rtsopts
     - -with-rtsopts=-N
     dependencies:

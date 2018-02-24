@@ -3,6 +3,7 @@ module Grid
     )
 where
 
+
 -- Base
 import Control.Monad (join)
 import Data.Word (Word64)
